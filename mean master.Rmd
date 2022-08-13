@@ -1,0 +1,122 @@
+---
+title: "Average's calculation of the1st semester of master 2 probability and statistics."
+author: "Cylia YACEF"
+date: '2022-08-13'
+output: slidy_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+## About the Course Project
+
+This is a deliverable for the course Developing Data Products as part of the Coursera Data Science Specialization.
+
+Instructions:
+
+1. Write a shiny application with associated supporting documentation. The documentation should be thought of as whatever a user will need to get started using your application.
+2. Deploy the application on Rstudio's shiny server
+3. Share the application link by pasting it into the provided text box
+4. Share your server.R and ui.R code on github
+
+
+## How to use the application
+This application allows students of Master 2 majoring in probability and statistics to calculate their first semester's average.
+
+ui.R, and Server.R Code in my github repository
+
+https://github.com/cylia2131/Shiny-Application-and-Reproducible-Pitch
+
+## Run the application
+
+The application is available at 
+
+https://415p7a-cylia-yacef.shinyapps.io/mean/?_ga=2.38167843.1046915759.1660402315-2031391207.1660402315
+
+All you have to do is enter your exams marks.
+
+##
+The app appears like this
+
+```{r eruptions }
+
+library(shiny) 
+shinyUI(
+  pageWithSidebar(
+    # Application title
+    headerPanel("Average's calculation of the1st semester of master 2 probability and statistics."),
+    
+    sidebarPanel(
+      numericInput('Regression_model', 'Insert your Regression model mark', 10,min = 0, max = 20, step = 0.5) ,
+      numericInput('Waiting_system', 'Insert your Waiting system mark', 10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Time_series', 'Insert your Time series mark',10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Extreme_value_theory', 'Insert your Extreme value theory mark',10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Martingale_theory', 'Insert your Martingale theory mark',10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Monte_Carlo_method', 'Insert your Monte Carlo method mark',10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Tic_and_Management', 'Insert your Tic and Management mark',10, min = 0, max = 20, step = 0.5) ,
+      numericInput('Educational_engineering', 'Insert your Educational engineering mark',10, min = 0, max = 20, step = 0.5) 
+    ), 
+    mainPanel(
+      h3('This application calculates the average of the first semester'),
+      h3('Pass or fail is evaluated as follows:'),
+      h3(tags$div(
+        tags$ul(
+          tags$li('Average <10,       : Failed'),
+          tags$li('Average >= 10 : Passed')
+        )
+      )),
+      
+      h3(), 
+      verbatimTextOutput("inputRegression_modelmark"),
+      verbatimTextOutput("inputWaiting_systemmark"),
+      verbatimTextOutput("inputTime_seriesmark"),
+      verbatimTextOutput("inputExtreme_value_theorysmark"),
+      verbatimTextOutput("inputMartingale_theorymark"),
+      verbatimTextOutput("inputMonte_Carlo_methodmark"),
+      verbatimTextOutput("inputTic_and_Managementmark"),
+      verbatimTextOutput("inputEducational_engineeringmark"),
+      
+      h3('Your calulated AVERAGE RESULT is:'),
+      verbatimTextOutput("estimation"),
+      h3('It means that you:'),strong(verbatimTextOutput("diagnostic"))
+      
+    )
+    
+  )   
+)
+
+
+
+shinyServer(
+  function(input, output) {
+Average_Factor<-function(Regression_model,Waiting_system,Time_series,
+                         Extreme_value_theory, Martingale_theory,
+                         Monte_Carlo_method, Tic_and_Management,
+                         Educational_engineering) {(Regression_model*2 +                              Waiting_system*3 +Time_series*2         +Extreme_value_theory*2 + Martingale_theory *3 + Monte_Carlo_method*2+ Tic_and_Management + Educational_engineering)/17}
+
+diagnostic_f<-function(Regression_model,Waiting_system,Time_series,
+                       Extreme_value_theory, Martingale_theory,
+                       Monte_Carlo_method, Tic_and_Management,
+                       Educational_engineering){
+  
+  Average_value<-(Regression_model*2 + Waiting_system*3 +
+                    Time_series*2 + Extreme_value_theory*2 +
+                    Martingale_theory *3 + Monte_Carlo_method*2+
+                    Tic_and_Management + Educational_engineering)/17
+  
+  if(Average_value < 10) return("Failed")
+  else 
+    if(Average_value >=10) return ("Passed")
+  }
+
+
+    
+      output$estimation <- renderPrint({Average_Factor(input$Regression_model,input$Waiting_system, input$Time_series,input$Extreme_value_theory,input$Martingale_theory, input$Monte_Carlo_method, input$Tic_and_Management, input$Educational_engineering)})
+   
+       output$diagnostic <- renderPrint({diagnostic_f(input$Regression_model,input$Waiting_system, input$Time_series,input$Extreme_value_theory, input$Martingale_theory,input$Monte_Carlo_method, input$Tic_and_Management, input$Educational_engineering)})
+  } 
+) 
+
+
+```
